@@ -14,8 +14,6 @@ import paho.mqtt.client as paho
 import os
 import configparser
 from datetime import datetime
-#import influxdb_client
-#from influxdb_client.client.write_api import SYNCHRONOUS
 
 def twosComplement_hex(hexval, reg):
   if hexval=="" or (" " in hexval):
@@ -102,6 +100,8 @@ logfile = open(config_logfile, "a")
 
 # Initialise InfluxDB support
 if influxdb=="1":
+  import influxdb_client
+  from influxdb_client.client.write_api import SYNCHRONOUS
   WriteDebug(logfile, "Initialising InfluxDB connection")
   ifclient = influxdb_client.InfluxDBClient(url=ifurl, token=iftoken, org=iforg)
   influxdb_api = ifclient.write_api(write_options=SYNCHRONOUS)
