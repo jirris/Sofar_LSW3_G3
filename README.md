@@ -59,6 +59,7 @@ influxdb_url=http://x.x.x.x:8086 #InfluxDB server access URL
 influxdb_bucket=SolarData       # InfluxDB bucket to store Inverter's data
 influxdb_org=                   # InfluxDB organization
 influxdb_token=                 # InfluxDB access token
+ifluxdb_empty=1                 # If no data is captured, should we write zero values
 
 [InfluxDB]
 influxdb_host=                  # InfluxDB host (i.e. 127.0.0.1)
@@ -180,11 +181,10 @@ bash:/python3 /InverterHWData.py (or ./InverterHWData.py)
 }
 ```
 # Known Issues
-You tell me :)
+Some instability in special events.
 
 # Contrib
-Feel free to suggest :)
-If You want to rewrite or/add change anything - please fork Your own project.
+Submit PR or fork :) on this fork :)
 
 # FAQ
 ```
