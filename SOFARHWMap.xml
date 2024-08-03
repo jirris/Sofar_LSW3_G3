@@ -5,7 +5,7 @@
       {
         "titleEN": "Product code",
         "titlePL": "Moc falownika",
-        "registers": ["0x2000"],
+        "registers": ["0x0444"],
         "optionRanges": [
           {
             "key": 0,
@@ -63,28 +63,28 @@
       {
         "titleEN": "Serial number",
         "titlePL": "Numer seryjny",
-        "registers": ["0x2001","0x2002","0x02003","0x2004","0x2005","0x2006","0x2007"],
+        "registers": ["0x0445","0x0446","0x0447","0x0449","0x044A","0x044B","0x044C"],
         "optionRanges": [],
         "value_type": "SN"
       },
       {
         "titleEN": "Software Version",
         "titlePL": "Wersja oprogramowania",
-        "registers": ["0x2008","0x2009"],
+        "registers": ["0x44F","0x0450"],
         "optionRanges": [],
         "value_type": "SV"
       },
       {
         "titleEN": "Hardware Version",
         "titlePL": "Wersja sprzętu",
-        "registers": ["0x200A","0x200B"],
+        "registers": ["0x044D","0x044E"],
         "optionRanges": [],
         "value_type": "HV"
       },
       {
         "titleEN": "DSP Version",
         "titlePL": "Wersja DSP",
-        "registers": ["0x200C","0x200D"],
+        "registers": ["0x044F","0x0450"],
         "optionRanges": [],
         "value_type": "DSPV"
       }

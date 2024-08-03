@@ -28,6 +28,7 @@ configParser.read(configFilePath)
 inverter_ip=configParser.get('SofarInverter', 'inverter_ip')
 inverter_port=int(configParser.get('SofarInverter', 'inverter_port'))
 inverter_sn=int(configParser.get('SofarInverter', 'inverter_sn'))
+inverter_type=int(configParser.get('SofarInverter', 'inverter_type'))
 reg_start=(int(configParser.get('SofarInverter', 'registerhw_start'),0)) # Starting modbus register address (from ModBus-RTU Communication Protocol doc)
 reg_end=(int(configParser.get('SofarInverter', 'registerhw_end'),0)) # End modbus register address (from ModBus-RTU Communication Protocol doc)
 lang=configParser.get('SofarInverter', 'lang')
@@ -45,6 +46,11 @@ SV="\""
 HV="\""
 DSPV="\""
 
+if inverter_type:
+   init = "0103"
+else:
+   init = "0104"
+
 # Data logger frame begin
 start = binascii.unhexlify('A5') # Logger Start code
 length=binascii.unhexlify('1700') # Logger frame DataLength
@@ -54,8 +60,8 @@ datafield = binascii.unhexlify('020000000000000000000000000000') # com.igen.loca
 # Modbus request begin
 pos_ini=str(hex_zfill(pini)[2:])
 pos_fin=str(hex_zfill(pfin-pini+1)[2:])
-businessfield= binascii.unhexlify('0104' + pos_ini + pos_fin) # Modbus data to count crc
-if verbose=="1": print('Modbus request: 0104 ' + pos_ini + " " + pos_fin +" "+str(padhex(hex(libscrc.modbus(businessfield)))[4:6])+str(padhex(hex(libscrc.modbus(businessfield)))[2:4]))
+businessfield= binascii.unhexlify(init + pos_ini + pos_fin) # Modbus data to count crc
+if verbose=="1": print('Modbus request: ' + init  + ' ' + pos_ini + " " + pos_fin +" "+str(padhex(hex(libscrc.modbus(businessfield)))[4:6])+str(padhex(hex(libscrc.modbus(businessfield)))[2:4]))
 crc=binascii.unhexlify(str(padhex(hex(libscrc.modbus(businessfield)))[4:6])+str(padhex(hex(libscrc.modbus(businessfield)))[2:4])) # CRC16modbus
 # Modbus request end
 checksum=binascii.unhexlify('00') #checksum F2
@@ -146,11 +152,12 @@ if lang=="PL":
     output=output+"\"Wersja oprogramowania" + "\":" + SV +"\","
     output=output+"\"Wersja sprzętowa" + "\":" + HV +"\","
     output=output+"\"Wersja DSP" + "\":" + DSPV +"\","
+    output=output+"\"Moc falownika" + "\":" + Product_Code +"\","
 else:
     output=output+"\"Serial Number" + "\":" + SN +"\","
     output=output+"\"Software Version" + "\":" + SV +"\","
     output=output+"\"Hardware Version" + "\":" + HV +"\","
     output=output+"\"DSP Version" + "\":" + DSPV +"\","
 output=output[:-1]+"}"
-jsonoutput=json.loads(output)
+jsonoutput=json.loads(output, strict=False)
 print(json.dumps(jsonoutput, indent=4, sort_keys=False, ensure_ascii=False))

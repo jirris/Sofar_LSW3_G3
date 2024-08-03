@@ -66,10 +66,12 @@ configParser.read(configFilePath)
 inverter_ip=configParser.get('SofarInverter', 'inverter_ip')
 inverter_port=int(configParser.get('SofarInverter', 'inverter_port'))
 inverter_sn=int(configParser.get('SofarInverter', 'inverter_sn'))
+inverter_type=int(configParser.get('SofarInverter', 'inverter_type'))
 reg_start1=(int(configParser.get('SofarInverter', 'register_start1'),0))
 reg_end1=(int(configParser.get('SofarInverter', 'register_end1'),0))
 reg_start2=(int(configParser.get('SofarInverter', 'register_start2'),0))
 reg_end2=(int(configParser.get('SofarInverter', 'register_end2'),0))
+reg_list=configParser.get('SofarInverter', 'register_list')
 mqtt=int(configParser.get('MQTT', 'mqtt'))
 mqtt_basic=configParser.get('MQTT', 'mqtt_basic')
 mqtt_server=configParser.get('MQTT', 'mqtt_server')
@@ -127,6 +129,13 @@ PMData=[]
 DomoticzData=[]
 HomeAssistantData=[]
 invstatus=1
+if inverter_type:
+   init = "0103"
+else:
+   init = "0104"
+chunks_len = len(reg_list)
+
+
 
 # OPEN CONNECTION TO LOGGER
 if verbose=="1": print("Connecting to logger... ", end='');
@@ -154,9 +163,9 @@ if invstatus==1:
     controlcode= binascii.unhexlify('1045') #controlCode
     serial=binascii.unhexlify('0000') # serial
     datafield = binascii.unhexlify('020000000000000000000000000000') #com.igen.localmode.dy.instruction.send.SendDataField
-    pos_ini=str(hex(pini)[2:4].zfill(4))
-    pos_fin=str(hex(pfin-pini+1)[2:4].zfill(4))
-    businessfield= binascii.unhexlify('0103' + pos_ini + pos_fin) # sin CRC16MODBUS
+    pos_ini=str(hex(pini)[2:5].zfill(4))
+    pos_fin=str(hex(pfin-pini+1)[2:5].zfill(4))
+    businessfield= binascii.unhexlify(init + pos_ini + pos_fin) # sin CRC16MODBUS
     crc=binascii.unhexlify(str(hex(libscrc.modbus(businessfield))[4:6])+str(hex(libscrc.modbus(businessfield))[2:4])) # CRC16modbus
     checksum=binascii.unhexlify('00') #checksum F2
     endCode = binascii.unhexlify('15')
