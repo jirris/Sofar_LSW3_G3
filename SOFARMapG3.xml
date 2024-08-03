@@ -192,7 +192,7 @@
       {
         "titleEN": "L1 Voltage",
         "titlePL": "Napięcie L1",
-        "registers": ["0x050A"],
+        "registers": ["0x048D"],
         "DomoticzIdx": 0,
         "optionRanges": [],
         "ratio": 0.1,
@@ -206,7 +206,7 @@
       {
         "titleEN": "L1 Current",
         "titlePL": "Prąd L1",
-        "registers": ["0x050B"],
+        "registers": ["0x048E"],
         "DomoticzIdx": 0,
         "optionRanges": [],
         "ratio": 0.01,
@@ -220,7 +220,7 @@
       {
         "titleEN": "L2 Voltage",
         "titlePL": "Napięcie L2",
-        "registers": ["0x0512"],
+        "registers": ["0x0498"],
         "DomoticzIdx": 0,
         "optionRanges": [],
         "ratio": 0.1,
@@ -234,7 +234,7 @@
       {
         "titleEN": "L2 Current",
         "titlePL": "Prąd L2",
-        "registers": ["0x0513"],
+        "registers": ["0x0499"],
         "DomoticzIdx": 0,
         "optionRanges": [],
         "ratio": 0.01,
@@ -248,7 +248,7 @@
       {
         "titleEN": "L3 Voltage",
         "titlePL": "Napięcie L3",
-        "registers": ["0x051A"],
+        "registers": ["0x04A3"],
         "DomoticzIdx": 0,
         "optionRanges": [],
         "ratio": 0.1,
@@ -262,7 +262,7 @@
       {
         "titleEN": "L3 Current",
         "titlePL": "Prąd L3",
-        "registers": ["0x051B"],
+        "registers": ["0x04A4"],
         "DomoticzIdx": 0,
         "optionRanges": [],
         "ratio": 0.01,
@@ -320,6 +320,20 @@
         "label_value": "Status"
       },
       {
+        "titleEN": "Inverter ambient temperature",
+        "titlePL": "Temperatura modułu",
+        "registers": ["0x0418"],
+        "DomoticzIdx": 0,
+        "optionRanges": [],
+        "ratio": 1,
+        "unit": "ºC",
+        "graph": 1,
+        "metric_type": "gauge",
+        "metric_name": "InverterTemp_celsius",
+        "label_name": "Temp",
+        "label_value": "Ambient"
+      },
+      {
         "titleEN": "Inverter module temperature",
         "titlePL": "Temperatura modułu",
         "registers": ["0x0420"],
@@ -336,7 +350,7 @@
       {
         "titleEN": "Inverter inner termperature",
         "titlePL": "Temperatura falownika",
-        "registers": ["0x0421"],
+        "registers": ["0x041A"],
         "DomoticzIdx": 0,
         "optionRanges": [],
         "ratio": 1,

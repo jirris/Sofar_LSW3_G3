@@ -83,6 +83,7 @@ config_logfile=configParser.get('SofarInverter', 'log_file')
 prometheus=configParser.get('Prometheus', 'prometheus')
 prometheus_file=configParser.get('Prometheus', 'prometheus_file')
 influxdb=configParser.get('InfluxDB', 'influxdb')
+influxempty=configParser.get('InfluxDB', 'influxdb_empty')
 ifurl=configParser.get('InfluxDB', 'influxdb_url')
 ifbucket=configParser.get('InfluxDB', 'influxdb_bucket')
 iforg=configParser.get('InfluxDB', 'influxdb_org')
@@ -291,7 +292,7 @@ if influxdb=="1" and invstatus==1:
   WriteDebug(logfile, "Writing data to InfluxDB")
   Write2InfluxDB(InfluxData)
   if verbose=="1": print("Influx data: ", json.dumps(InfluxData, indent=4, sort_keys=False, ensure_ascii=False));
-if influxdb=="1" and invstatus==0:
+if influxdb=="1" and invstatus==0 and influxempty=="1":
   WriteDebug(logfile, "Writing empty data to InfluxDB")
   with open("./" + inverter_map, encoding="utf-8") as txtfile:
     parameters=json.loads(txtfile.read())
