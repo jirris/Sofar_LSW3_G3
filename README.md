@@ -1,5 +1,7 @@
-# SOFAR Inverter + LSW-3/LSE
-Small utility to read data from SOFAR K-TLX inverters through the Solarman (LSW-3/LSE) datalogger. 
+# SOFAR Inverter + LSW-3/LSE and G3 
+Forked from https://github.com/MichaluxPL/Sofar_LSW3 as author preferred.
+
+Small utility to read data from SOFAR K-TLX and KTLX G3 inverters through the Solarman (LSW-3/LSE) datalogger. 
 Two scripts to get inverter's statistics and hardware info.
 Tested with logger S/N 17xxxxxxx and 21xxxxxxx (protocol V5).
 Requires python3 to run.
@@ -24,12 +26,24 @@ Edit the config.cfg and enter the following data:
 inverter_ip=X.X.X.X             # data logger IP
 inverter_port=8899              # data logger port
 inverter_sn=XXXXXXXXXX          # data logger S/N
-register_start1=0x0000          # Inverter register's first MODBUS address for the first register's range.
-register_end1=0x0027            # Inverter register's last MODBUS address for the first register's range
-register_start2=0x0105          # Inverter register's first MODBUS address for a second register's range
-register_end2=0x0114            # Inverter register's last MODBUS address for a second register's range
-registerhw_start=0x2000         # Like above, but for InverterHWData.py
-registerhw_end=0x200D           # Like above, but for InverterHWData.py
+
+# For G3 inverter, Inverter register's  MODBUS addresses for the register's range start and end pairs (example start 0x0400, end 0x043A)
+register_list=0x0400, 0x043A, 0x0480, 0x04BC, 0x0580, 0x05B3, 0x0680, 0x069B
+# For non G3 inverter uncomment this:
+# register_list=0x0000, 0x0027, 0x0105, 0x0114
+inverter_map=SOFARMapG3.xml
+#inverter_map=SOFARMap.xml
+
+# For InverterHWData.py tool:
+registerhw_start=0x0444 # G3
+registerhw_end=0x0455   # G3
+# Others
+registerhw_start=0x2000         # Others
+registerhw_end=0x200D           # Others
+# XML file for mapping:
+inverterhw_map=SOFARHWMapG3.xml
+#inverterhw_map=SOFARHWMap.xml
+
 lang=                           # Output language (available: PL,EN)
 verbose=0                       # Set to 1 for additional info to be presented (registers, binary packets etc.)
 debug=0                         # Set to 1 to log additional debug data to a log file

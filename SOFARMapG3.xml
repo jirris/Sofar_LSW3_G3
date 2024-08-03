@@ -1,0 +1,76 @@
+[
+  {
+    "directory": "Inverter",
+    "items": [
+      {
+        "titleEN": "Inverter status",
+        "titlePL": "Status",
+        "registers": ["0x0404"],
+        "DomoticzIdx": 0,
+        "optionRanges": [
+          {
+            "key": 0,
+            "valueEN": "Stand-by",
+            "valuePL": "Oczekiwanie"
+          },
+          {
+            "key": 1,
+            "valueEN": "Self-checking",
+            "valuePL": "Weryfikacja wewn."
+          },
+          {
+            "key": 2,
+            "valueEN": "Normal",
+            "valuePL": "Normalny"
+          },
+          {
+            "key": 3,
+            "valueEN": "FAULT",
+            "valuePL": "BŁĄD"
+          },
+          {
+            "key": 4,
+            "valueEN": "Permanent",
+            "valuePL": "Usterka nie do naprawienia"
+          }
+
+        ],
+        "ratio": 1,
+        "unit": "",
+        "graph": 0,
+        "metric_type": "gauge",
+        "metric_name": "Inverter",
+        "label_name": "Status",
+        "label_value": "Status"
+      },
+      {
+        "titleEN": "Inverter module temperature",
+        "titlePL": "Temperatura modułu",
+        "registers": ["0x0420"],
+        "DomoticzIdx": 0,
+        "optionRanges": [],
+        "ratio": 1,
+        "unit": "ºC",
+        "graph": 1,
+        "metric_type": "gauge",
+        "metric_name": "InverterTemp_celsius",
+        "label_name": "Temp",
+        "label_value": "Module"        
+      },
+ {
+        "titleEN": "PV1 Power",
+        "titlePL": "Moc PV1",
+        "registers": ["0x0586"],
+        "DomoticzIdx": 0,
+        "optionRanges": [],
+        "ratio": 10,
+        "unit": "W",
+        "graph": 1,
+        "metric_type": "gauge",
+        "metric_name": "SolarPower",
+        "label_name": "Power",
+        "label_value": "PV1"
+      }
+    ]
+  }
+]

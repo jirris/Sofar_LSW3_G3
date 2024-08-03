@@ -13,10 +13,9 @@ import json
 import paho.mqtt.client as paho
 import os
 import configparser
-import datetime
 from datetime import datetime
-import influxdb_client
-from influxdb_client.client.write_api import SYNCHRONOUS
+#import influxdb_client
+#from influxdb_client.client.write_api import SYNCHRONOUS
 
 def twosComplement_hex(hexval, reg):
   if hexval=="" or (" " in hexval):
@@ -66,11 +65,7 @@ configParser.read(configFilePath)
 inverter_ip=configParser.get('SofarInverter', 'inverter_ip')
 inverter_port=int(configParser.get('SofarInverter', 'inverter_port'))
 inverter_sn=int(configParser.get('SofarInverter', 'inverter_sn'))
-inverter_type=int(configParser.get('SofarInverter', 'inverter_type'))
-reg_start1=(int(configParser.get('SofarInverter', 'register_start1'),0))
-reg_end1=(int(configParser.get('SofarInverter', 'register_end1'),0))
-reg_start2=(int(configParser.get('SofarInverter', 'register_start2'),0))
-reg_end2=(int(configParser.get('SofarInverter', 'register_end2'),0))
+inverter_map=configParser.get('SofarInverter', 'inverter_map')
 reg_list=configParser.get('SofarInverter', 'register_list')
 mqtt=int(configParser.get('MQTT', 'mqtt'))
 mqtt_basic=configParser.get('MQTT', 'mqtt_basic')
@@ -120,8 +115,6 @@ if influxdb=="1":
 
 # PREPARE & SEND DATA TO THE INVERTER
 output="{" # initialise json output
-pini=reg_start1
-pfin=reg_end1
 chunks=0
 totalpower=0
 totaltime=0
@@ -129,13 +122,9 @@ PMData=[]
 DomoticzData=[]
 HomeAssistantData=[]
 invstatus=1
-if inverter_type:
-   init = "0103"
-else:
-   init = "0104"
-chunks_len = len(reg_list)
-
-
+init = "0103"
+chunks_list = reg_list.split(",")
+chunks_len = len(chunks_list)
 
 # OPEN CONNECTION TO LOGGER
 if verbose=="1": print("Connecting to logger... ", end='');
@@ -155,8 +144,10 @@ if verbose=="1" and invstatus==1:
   print("connected successfully !");
   WriteDebug(logfile, "Inverter connected successfully !")
 if invstatus==1:
-  while chunks<2:
-    WriteDebug(logfile, "Gathering data from the inverter. Chunks loop nr: "+str(chunks+1))
+  while chunks<chunks_len:
+    pini=int(chunks_list[chunks], 0)
+    pfin=int(chunks_list[chunks+1], 0)
+    WriteDebug(logfile, "Gathering data from the inverter. Chunk starting address: " + str(hex(pini)))
     # Data frame begin
     start = binascii.unhexlify('A5') #start
     length=binascii.unhexlify('1700') # datalength
@@ -182,7 +173,7 @@ if invstatus==1:
 
     # SEND DATA
     if verbose=="1":
-      print("*** Chunk no: ", chunks);
+      print("*** Chunk addr: ", str(hex(pini)));
       print("Sent data: ", frame);
     WriteDebug(logfile, "Sending a request to inverter")
     clientSocket.sendall(frame_bytes);
@@ -216,7 +207,7 @@ if invstatus==1:
         p2=60+(a*4)
         hexpos=str("0x") + str(hex(a+pini)[2:].zfill(4)).upper()
         response=twosComplement_hex(str(''.join(hex(ord(chr(x)))[2:].zfill(2) for x in bytearray(data))+'  '+re.sub('[^\x20-\x7f]', '', ''))[p1:p2], hexpos)
-        with open("./SOFARMap.xml", encoding="utf-8") as txtfile:
+        with open("./" + inverter_map, encoding="utf-8") as txtfile:
           parameters=json.loads(txtfile.read())
         for parameter in parameters:
           for item in parameter["items"]:
@@ -277,11 +268,8 @@ if invstatus==1:
                   if DomoticzSupport=="1" and DomoticzIdx>0: PrepareDomoticzData(DomoticzData, DomoticzIdx, response);
                   if HomeAssistantSupport=="1": HomeAssistantData.append([title, ratio, unit, metric_type, metric_name, label_name, label_value, response, totaltime]);
         a+=1
-      if chunks==0:
-        pini=reg_start2
-        pfin=reg_end2
-    chunks+=1
-    if chunks>1:
+    chunks+=2
+    if chunks>chunks_len:
       WriteDebug(logfile, "Exiting chunks loop")
 output=output[:-1]+"}"
 if invstatus>0:
@@ -305,7 +293,7 @@ if influxdb=="1" and invstatus==1:
   if verbose=="1": print("Influx data: ", json.dumps(InfluxData, indent=4, sort_keys=False, ensure_ascii=False));
 if influxdb=="1" and invstatus==0:
   WriteDebug(logfile, "Writing empty data to InfluxDB")
-  with open("./SOFARMap.xml", encoding="utf-8") as txtfile:
+  with open("./" + inverter_map, encoding="utf-8") as txtfile:
     parameters=json.loads(txtfile.read())
   for parameter in parameters:
     for item in parameter["items"]:
@@ -398,7 +386,7 @@ if mqtt==1:
           print("Error publishing device status to MQTT")
           Write2LogFile(logfile, "Error publishing device status to MQTT")
       if DomoticzSupport=="1":
-        with open("./SOFARMap.xml", encoding="utf-8") as txtfile:
+        with open("./" + inverter_map, encoding="utf-8") as txtfile:
           parameters=json.loads(txtfile.read())
         result=client.publish(domoticz_mqtt_topic, "{ \"idx\": "+str(parameters[2]['items'][0]['DomoticzIdx'])+", \"svalue\": \"Off\" }", retain=True)
         result.wait_for_publish()

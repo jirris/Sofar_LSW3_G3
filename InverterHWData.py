@@ -28,7 +28,7 @@ configParser.read(configFilePath)
 inverter_ip=configParser.get('SofarInverter', 'inverter_ip')
 inverter_port=int(configParser.get('SofarInverter', 'inverter_port'))
 inverter_sn=int(configParser.get('SofarInverter', 'inverter_sn'))
-inverter_type=int(configParser.get('SofarInverter', 'inverter_type'))
+inverter_map=configParser.get('SofarInverter', 'inverter_hwmap')
 reg_start=(int(configParser.get('SofarInverter', 'registerhw_start'),0)) # Starting modbus register address (from ModBus-RTU Communication Protocol doc)
 reg_end=(int(configParser.get('SofarInverter', 'registerhw_end'),0)) # End modbus register address (from ModBus-RTU Communication Protocol doc)
 lang=configParser.get('SofarInverter', 'lang')
@@ -45,11 +45,8 @@ SN="\""
 SV="\""
 HV="\""
 DSPV="\""
+init = "0103"
 
-if inverter_type:
-   init = "0103"
-else:
-   init = "0104"
 
 # Data logger frame begin
 start = binascii.unhexlify('A5') # Logger Start code
@@ -117,7 +114,7 @@ if verbose=="1":
     hexstr=str(' '.join(hex(ord(chr(x)))[2:].zfill(2) for x in bytearray(data)))
     print("Hex string received:",hexstr.upper())
 
-with open("./SOFARHWMap.xml") as txtfile:
+with open("./" + inverter_map) as txtfile:
    parameters=json.loads(txtfile.read())
 while a<=i:
  p1=56+(a*4)
